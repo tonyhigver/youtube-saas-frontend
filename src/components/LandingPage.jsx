@@ -4,20 +4,26 @@ export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Comprobar si el usuario ya inició sesión en tu app
+    // Comprobar si el usuario ya inició sesión
     const logged = localStorage.getItem("userLoggedIn");
     setIsLoggedIn(logged === "true");
+
+    // Si llega token de Google en URL, guardarlo y marcar como logueado
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+      localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("google_token", token);
+      setIsLoggedIn(true);
+      window.location.hash = ""; // Limpiar URL
+    }
   }, []);
 
-  // Configuración de OAuth
-  const clientId = "771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com";
-  const redirectUri = "https://tu-backend.com/api/oauth-callback"; // Endpoint de backend que maneja el code
-  const scope = "https://www.googleapis.com/auth/youtube.readonly";
-  const accessType = "offline"; // Para obtener refresh_token
+  // URL de OAuth de Google con redirect a la landing page en producción
+  const googleAuthUrl =
+    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
-  const youtubeAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-    redirectUri
-  )}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=${accessType}`;
+  const youtubeAuthUrl = "TU_YOUTUBE_OAUTH_URL"; // aquí luego pones la URL de OAuth de YouTube
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
@@ -36,20 +42,28 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
       </p>
 
-      {/* Botón Conectar con YouTube solo si NO está logueado */}
+      {/* Botón de Google Sign-In solo si NO está logueado */}
       {!isLoggedIn && (
         <a
-          href={youtubeAuthUrl}
-          className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
+          href={googleAuthUrl}
+          className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google logo"
             className="w-5 h-5"
           />
-          Conectar con YouTube
+          Iniciar sesión con Google
         </a>
       )}
+
+      {/* Botón con glow para YouTube */}
+      <a
+        href={youtubeAuthUrl}
+        className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)]"
+      >
+        Conectar con YouTube
+      </a>
 
       {/* Footer */}
       <footer className="mt-16 text-gray-400 text-sm">
