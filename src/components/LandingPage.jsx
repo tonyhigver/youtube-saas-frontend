@@ -42,7 +42,8 @@ export default function LandingPage() {
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
-  const clientId = "771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com";
+  // CLIENT IDs ACTUALIZADOS
+  const clientId = "771066809924-atjqbg5dafq7of82se2a7ltr3688hnkp.apps.googleusercontent.com"; // YouTube OAuth
   const redirectUri = "https://youtube-backend.vercel.app/api/oauth-callback";
   const scope = "https://www.googleapis.com/auth/youtube.readonly";
   const accessType = "offline";
