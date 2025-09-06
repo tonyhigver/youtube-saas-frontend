@@ -61,7 +61,7 @@ export default function LandingPage() {
           className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
           <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
             alt="Google logo"
             className="w-5 h-5"
           />
@@ -75,7 +75,7 @@ export default function LandingPage() {
         className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
       >
         <img
-          src="https://www.svgrepo.com/show/47569/youtube.svg"
+          src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg"
           alt="YouTube logo"
           className="w-5 h-5"
         />
