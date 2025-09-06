@@ -75,8 +75,8 @@ export default function LandingPage() {
         className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
       >
         <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google logo"
+          src="https://www.svgrepo.com/show/47569/youtube.svg"
+          alt="YouTube logo"
           className="w-5 h-5"
         />
         Conectar con YouTube
