@@ -1,9 +1,9 @@
 import React from "react";
 
 export default function LandingPage() {
-  // 🔑 Aquí luego reemplazas con tu Client ID de Google y la URL real de OAuth
+  // 🔑 URL de OAuth de Google con redirect a la landing page en producción
   const googleAuthUrl =
-    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=http://localhost:3000&response_type=token&scope=openid%20email%20profile";
+    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
   const youtubeAuthUrl = "TU_YOUTUBE_OAUTH_URL"; // aquí luego pones la URL de OAuth de YouTube
 
