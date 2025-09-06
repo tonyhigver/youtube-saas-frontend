@@ -5,20 +5,16 @@ export default function LandingPage() {
   const [isYouTubeConnected, setIsYouTubeConnected] = useState(false); // YouTube OAuth
 
   useEffect(() => {
-    // Revisar si el usuario ya inició sesión en Google
     const googleLogged = localStorage.getItem("userLoggedIn") === "true";
     setIsLoggedIn(googleLogged);
 
-    // Revisar si backend ya completó YouTube OAuth
     const params = new URLSearchParams(window.location.search);
     if (params.get("loggedIn") === "true") {
       setIsYouTubeConnected(true);
     }
 
-    // Limpiar query params
     window.history.replaceState({}, document.title, "/");
 
-    // Revisar si frontend recibió token de Google (OAuth Flow)
     const hash = window.location.hash;
     if (hash.includes("access_token")) {
       const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
@@ -29,11 +25,9 @@ export default function LandingPage() {
     }
   }, []);
 
-  // OAuth frontend login Google (solo login)
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
-  // OAuth de YouTube (apunta al backend)
   const clientId = "771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com";
   const redirectUri = "https://youtube-backend.vercel.app/api/oauth-callback";
   const scope = "https://www.googleapis.com/auth/youtube.readonly";
@@ -82,7 +76,6 @@ export default function LandingPage() {
         Conectar con YouTube
       </a>
 
-      {/* Mensaje cuando ya completó YouTube OAuth */}
       {isYouTubeConnected && (
         <p className="text-white text-xl mt-4">¡Conexión con YouTube completada! Puedes continuar.</p>
       )}
