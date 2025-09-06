@@ -17,7 +17,21 @@ export default function LandingPage() {
 
     // Limpiar query params
     window.history.replaceState({}, document.title, "/");
+
+    // Revisar si frontend recibió token de Google (OAuth Flow)
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+      localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("google_token", token);
+      setIsLoggedIn(true);
+      window.location.hash = "";
+    }
   }, []);
+
+  // OAuth frontend login Google (solo login)
+  const googleAuthUrl =
+    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
   // OAuth de YouTube (apunta al backend)
   const clientId = "771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com";
@@ -27,10 +41,6 @@ export default function LandingPage() {
   const youtubeAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
     redirectUri
   )}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=${accessType}`;
-
-  // OAuth frontend login Google (solo login)
-  const googleAuthUrl =
-    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
@@ -59,7 +69,7 @@ export default function LandingPage() {
         </a>
       )}
 
-      {/* Botón Conectar con YouTube (si ya logueó Google o no) */}
+      {/* Botón Conectar con YouTube (solo si no está conectado) */}
       {!isYouTubeConnected && (
         <a
           href={youtubeAuthUrl}
