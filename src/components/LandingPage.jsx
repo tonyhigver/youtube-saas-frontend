@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function LandingPage() {
-  // 🔑 URL de OAuth de Google con redirect a la landing page en producción
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Comprobar si el usuario ya inició sesión
+    const logged = localStorage.getItem("userLoggedIn");
+    setIsLoggedIn(logged === "true");
+  }, []);
+
+  // URL de OAuth de Google con redirect a la landing page en producción
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
@@ -24,18 +32,20 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
       </p>
 
-      {/* Botón de Google Sign-In */}
-      <a
-        href={googleAuthUrl}
-        className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
-      >
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google logo"
-          className="w-5 h-5"
-        />
-        Iniciar sesión con Google
-      </a>
+      {/* Botón de Google Sign-In solo si NO está logueado */}
+      {!isLoggedIn && (
+        <a
+          href={googleAuthUrl}
+          className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google logo"
+            className="w-5 h-5"
+          />
+          Iniciar sesión con Google
+        </a>
+      )}
 
       {/* Botón con glow para YouTube */}
       <a
