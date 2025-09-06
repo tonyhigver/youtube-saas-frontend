@@ -11,24 +11,32 @@ export default function LandingPage() {
       setIsLoggedIn(true);
     }
 
-    // Revisar si backend ya completó YouTube OAuth
     const params = new URLSearchParams(window.location.search);
+
+    // Revisar si backend ya completó YouTube OAuth
     if (params.get("loggedIn") === "true") {
       setIsYouTubeConnected(true);
     }
 
-    // Limpiar query params de la URL
-    window.history.replaceState({}, document.title, "/");
-
-    // Revisar si viene token de Google en el hash
+    // Revisar si viene token de Google en hash o query
+    let token = null;
     const hash = window.location.hash;
+
     if (hash.includes("access_token")) {
-      const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+      token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+    } else {
+      token = params.get("access_token");
+    }
+
+    if (token) {
       localStorage.setItem("userLoggedIn", "true");
       localStorage.setItem("google_token", token);
       setIsLoggedIn(true); // 👈 fuerza re-render inmediato
-      window.location.hash = "";
     }
+
+    // Limpiar la URL después de procesar
+    window.history.replaceState({}, document.title, "/");
+    window.location.hash = "";
   }, []);
 
   const googleAuthUrl =
