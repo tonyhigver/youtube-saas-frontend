@@ -61,8 +61,8 @@ export default function LandingPage() {
           className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-            alt="Google logo"
+            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+            alt="Google G logo"
             className="w-5 h-5"
           />
           Iniciar sesión con Google
