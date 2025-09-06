@@ -48,31 +48,62 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
       </p>
 
-      {/* Botón de Google Sign-In (solo si NO ha iniciado sesión) */}
+      {/* Botón de Google Sign-In */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
           className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-            alt="Google G logo"
-            className="w-5 h-5"
-          />
+          {/* Logo Google inline */}
+          <svg className="w-5 h-5" viewBox="0 0 533.5 544.3">
+            <path
+              fill="#4285F4"
+              d="M533.5 278.4c0-17.3-1.5-34-4.3-50.3H272v95.3h146.9c-6.3 34-25 
+              62.9-53.1 82l85.8 66.7c50.1-46.2 78-114.1 78-193.7z"
+            />
+            <path
+              fill="#34A853"
+              d="M272 544.3c72.6 0 133.6-24.1 
+              178.1-65.4l-85.8-66.7c-23.9 16-54.3 
+              25.6-92.3 25.6-71 0-131.2-47.8-152.8-111.9L32.1 
+              386.6c44.6 88.5 134.2 151.7 239.9 157.7z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M119.2 306.5c-10.5-31.5-10.5-65.6 
+              0-97.1L32.1 142.2c-39.3 77-39.3 
+              168.1 0 245.1l87.1-80.8z"
+            />
+            <path
+              fill="#EA4335"
+              d="M272 107.7c38.3-.6 74.9 13.2 
+              102.8 38.9l77.1-77.1C405.3 24.1 
+              344.3 0 272 0 166.3 6 76.7 69.2 
+              32.1 157.7l87.1 80.8C140.8 155.5 
+              201 107.7 272 107.7z"
+            />
+          </svg>
           Iniciar sesión con Google
         </a>
       )}
 
-      {/* Botón Conectar con YouTube (siempre visible) */}
+      {/* Botón Conectar con YouTube */}
       <a
         href={youtubeAuthUrl}
         className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
       >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_(2017).svg"
-          alt="YouTube logo"
-          className="w-5 h-5"
-        />
+        {/* Logo YouTube inline */}
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path
+            fill="white"
+            d="M23.5 6.2s-.2-1.7-.9-2.5c-.9-1-2-1-2.5-1.1C16.6 2.2 
+            12 2.2 12 2.2h0s-4.6 0-8.1.4c-.5.1-1.6.1-2.5 
+            1.1-.7.8-.9 2.5-.9 2.5S0 8.3 0 10.5v1.9c0 2.2.2 
+            4.3.2 4.3s.2 1.7.9 2.5c.9 1 2.1 1 2.6 1.1 1.9.2 
+            7.9.4 7.9.4s4.6 0 8.1-.4c.5-.1 1.6-.1 2.5-1.1.7-.8.9-2.5.9-2.5s.2-2.2.2-4.3v-1.9c0-2.2-.2-4.3-.2-4.3z"
+          />
+          <path fill="#03245C" d="M9.8 15.3V8.7l6.4 3.3-6.4 3.3z" />
+        </svg>
         Conectar con YouTube
       </a>
 
