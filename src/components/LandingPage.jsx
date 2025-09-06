@@ -69,20 +69,18 @@ export default function LandingPage() {
         </a>
       )}
 
-      {/* Botón Conectar con YouTube (solo si no está conectado) */}
-      {!isYouTubeConnected && (
-        <a
-          href={youtubeAuthUrl}
-          className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
-        >
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google logo"
-            className="w-5 h-5"
-          />
-          Conectar con YouTube
-        </a>
-      )}
+      {/* Botón Conectar con YouTube (siempre visible) */}
+      <a
+        href={youtubeAuthUrl}
+        className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
+      >
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          alt="Google logo"
+          className="w-5 h-5"
+        />
+        Conectar con YouTube
+      </a>
 
       {/* Mensaje cuando ya completó YouTube OAuth */}
       {isYouTubeConnected && (
