@@ -4,7 +4,10 @@ export default function LandingPage() {
   const oauthUrl = "TU_OAUTH_URL"; // aquí luego pones la URL de OAuth
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-900 p-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen p-4"
+      style={{ backgroundColor: "#03245C" }}
+    >
       {/* Título principal */}
       <h1 className="text-6xl font-extrabold text-center mb-6 text-white drop-shadow-[0_0_20px_rgb(255,255,255)]">
         Búsqueda semántica básica
