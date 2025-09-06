@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
 
 export default function LandingPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Google login
-  const [isYouTubeConnected, setIsYouTubeConnected] = useState(false); // YouTube OAuth
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isYouTubeConnected, setIsYouTubeConnected] = useState(false);
 
   useEffect(() => {
+    // Revisar si ya hay sesión guardada
     const googleLogged = localStorage.getItem("userLoggedIn") === "true";
-    setIsLoggedIn(googleLogged);
+    if (googleLogged) {
+      setIsLoggedIn(true);
+    }
 
+    // Revisar si backend ya completó YouTube OAuth
     const params = new URLSearchParams(window.location.search);
     if (params.get("loggedIn") === "true") {
       setIsYouTubeConnected(true);
     }
 
+    // Limpiar query params de la URL
     window.history.replaceState({}, document.title, "/");
 
+    // Revisar si viene token de Google en el hash
     const hash = window.location.hash;
     if (hash.includes("access_token")) {
       const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
       localStorage.setItem("userLoggedIn", "true");
       localStorage.setItem("google_token", token);
-      setIsLoggedIn(true);
+      setIsLoggedIn(true); // 👈 fuerza re-render inmediato
       window.location.hash = "";
     }
   }, []);
@@ -48,13 +54,12 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
       </p>
 
-      {/* Botón de Google Sign-In */}
+      {/* Botón de Google solo si no ha iniciado sesión */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
           className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
-          {/* Logo Google inline */}
           <svg className="w-5 h-5" viewBox="0 0 533.5 544.3">
             <path
               fill="#4285F4"
@@ -92,7 +97,6 @@ export default function LandingPage() {
         href={youtubeAuthUrl}
         className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
       >
-        {/* Logo YouTube inline */}
         <svg className="w-6 h-6" viewBox="0 0 24 24">
           <path
             fill="white"
