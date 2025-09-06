@@ -7,6 +7,16 @@ export default function LandingPage() {
     // Comprobar si el usuario ya inició sesión
     const logged = localStorage.getItem("userLoggedIn");
     setIsLoggedIn(logged === "true");
+
+    // Si llega token de Google en URL, guardarlo y marcar como logueado
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+      localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("google_token", token);
+      setIsLoggedIn(true);
+      window.location.hash = ""; // Limpiar URL
+    }
   }, []);
 
   // URL de OAuth de Google con redirect a la landing page en producción
