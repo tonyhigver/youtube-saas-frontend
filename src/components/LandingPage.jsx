@@ -5,6 +5,7 @@ export default function LandingPage() {
   const [isYouTubeConnected, setIsYouTubeConnected] = useState(false);
 
   useEffect(() => {
+    // Revisar si ya hay sesión guardada
     const googleLogged = localStorage.getItem("userLoggedIn") === "true";
     if (googleLogged) {
       setIsLoggedIn(true);
@@ -12,10 +13,12 @@ export default function LandingPage() {
 
     const params = new URLSearchParams(window.location.search);
 
+    // Revisar si backend ya completó YouTube OAuth
     if (params.get("loggedIn") === "true") {
       setIsYouTubeConnected(true);
     }
 
+    // Revisar si viene token de Google en hash o query
     let token = null;
     const hash = window.location.hash;
 
@@ -28,9 +31,10 @@ export default function LandingPage() {
     if (token) {
       localStorage.setItem("userLoggedIn", "true");
       localStorage.setItem("google_token", token);
-      setIsLoggedIn(true);
+      setIsLoggedIn(true); // 👈 fuerza re-render inmediato
     }
 
+    // Limpiar la URL después de procesar
     window.history.replaceState({}, document.title, "/");
     window.location.hash = "";
   }, []);
@@ -40,7 +44,7 @@ export default function LandingPage() {
 
   // CLIENT IDs ACTUALIZADOS
   const clientId = "771066809924-atjqbg5dafq7of82se2a7ltr3688hnkp.apps.googleusercontent.com"; // YouTube OAuth
-  const redirectUri = "https://mi-backend12.duckdns.org:3001/api/oauth-callback"; // ✅ Cambiado aquí
+  const redirectUri = "https://mi-backend12.duckdns.org/api/oauth-callback"; // <-- Actualizado
   const scope = "https://www.googleapis.com/auth/youtube.readonly";
   const accessType = "offline";
   const youtubeAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
@@ -59,6 +63,7 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
       </p>
 
+      {/* Botón de Google solo si no ha iniciado sesión */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
@@ -96,6 +101,7 @@ export default function LandingPage() {
         </a>
       )}
 
+      {/* Botón Conectar con YouTube */}
       <a
         href={youtubeAuthUrl}
         className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
