@@ -43,7 +43,7 @@ export default function LandingPage() {
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
   // CLIENT IDs ACTUALIZADOS
-  const clientId = "771066809924-atjqbg5dafq7of82se2a7ltr3688hnkp.apps.googleusercontent.com"; // YouTube OAuth
+  const clientId = "771066809924-k1dqmre5kc27go0apu230o3o84fphfeh.apps.googleusercontent.com"; // YouTube OAuth
   const redirectUri = "https://mi-backend12.duckdns.org/api/oauth-callback"; // <-- Actualizado
   const scope = "https://www.googleapis.com/auth/youtube.readonly";
   const accessType = "offline";
