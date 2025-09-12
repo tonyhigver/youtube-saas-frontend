@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 export default function SaaSMainPage() {
   const [userProfile, setUserProfile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [agreed, setAgreed] = useState(false);
 
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("userProfile"));
@@ -15,6 +16,7 @@ export default function SaaSMainPage() {
 
   const handleUpload = () => {
     if (!selectedFile) return alert("Por favor selecciona un archivo antes de subir.");
+    if (!agreed) return alert("Debes confirmar que eres propietario del contenido.");
     // Aquí irá la lógica para subir y transcribir el video
     console.log("Subiendo video:", selectedFile.name);
     alert(`Video "${selectedFile.name}" listo para transcripción (simulación).`);
@@ -59,9 +61,26 @@ export default function SaaSMainPage() {
             className="mb-4 text-black"
           />
 
+          {/* Checkbox obligatorio */}
+          <label className="flex items-center gap-2 mt-2 text-white text-lg">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="w-5 h-5"
+            />
+            ☑ Confirmo que soy propietario del contenido o tengo permiso para usarlo.
+          </label>
+          <a href="/terms" className="underline text-blue-400 mt-2 mb-4 block">
+            Leer Términos de Servicio completos
+          </a>
+
           <button
             onClick={handleUpload}
-            className="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg font-semibold transition"
+            disabled={!agreed}
+            className={`px-6 py-2 rounded-lg font-semibold transition ${
+              agreed ? "bg-green-600 hover:bg-green-700" : "bg-gray-400 cursor-not-allowed"
+            }`}
           >
             Subir y Transcribir
           </button>
