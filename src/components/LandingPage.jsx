@@ -1,160 +1,137 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 
-// Demo React autónoma para verificación de Google OAuth
-// - Simula listado de videos (youtube.readonly)
-// - Simula formulario de subida de video (youtube.upload)
-// - Incluye páginas de Home, Demo, Privacy y Terms
-// - No realiza llamadas reales a Google ni YouTube
+export default function LandingPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isYouTubeConnected, setIsYouTubeConnected] = useState(false);
 
-export default function YouTubeOAuthDemoSimulado() {
-  const [route, setRoute] = useState("home"); // home | demo | privacy | terms
-  const [connected, setConnected] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    // Revisar si ya hay sesión guardada
+    const googleLogged = localStorage.getItem("userLoggedIn") === "true";
+    if (googleLogged) {
+      setIsLoggedIn(true);
+    }
 
-  const sampleVideos = [
-    { id: "a1", title: "Introducción a mi canal", thumb: "https://via.placeholder.com/320x180?text=Video+1" },
-    { id: "a2", title: "Detrás de cámaras: proyecto X", thumb: "https://via.placeholder.com/320x180?text=Video+2" },
-    { id: "a3", title: "Tutorial rápido: Y", thumb: "https://via.placeholder.com/320x180?text=Video+3" },
-  ];
+    const params = new URLSearchParams(window.location.search);
 
-  function simulateConnect() {
-    // Simula conexión con Google/YouTube
-    setConnected(true);
-  }
+    // Revisar si backend ya completó YouTube OAuth
+    if (params.get("loggedIn") === "true") {
+      setIsYouTubeConnected(true);
+    }
 
-  function simulateUpload() {
-    setUploading(true);
-    setProgress(0);
-    const interval = setInterval(() => {
-      setProgress((p) => {
-        const next = p + Math.floor(Math.random() * 15) + 10;
-        if (next >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setUploading(false);
-            setProgress(0);
-            alert("Simulación: video subido correctamente al canal (interfaz demostrativa)");
-          }, 400);
-          return 100;
-        }
-        return next;
-      });
-    }, 400);
-  }
+    // Revisar si viene token de Google en hash o query
+    let token = null;
+    const hash = window.location.hash;
+
+    if (hash.includes("access_token")) {
+      token = new URLSearchParams(hash.replace("#", "?")).get("access_token");
+    } else {
+      token = params.get("access_token");
+    }
+
+    if (token) {
+      localStorage.setItem("userLoggedIn", "true");
+      localStorage.setItem("google_token", token);
+      setIsLoggedIn(true); // 👈 fuerza re-render inmediato
+    }
+
+    // Limpiar la URL después de procesar
+    window.history.replaceState({}, document.title, "/");
+    window.location.hash = "";
+  }, []);
+
+  const googleAuthUrl =
+    "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
+
+  // CLIENT IDs ACTUALIZADOS
+  const clientId = "771066809924-k1dqmre5kc27go0apu230o3o84fphfeh.apps.googleusercontent.com"; // YouTube OAuth
+  const redirectUri = "https://mi-backend12.duckdns.org/api/oauth-callback"; // <-- Actualizado
+  const scope = "https://www.googleapis.com/auth/youtube.readonly";
+  const accessType = "offline";
+  const youtubeAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+    redirectUri
+  )}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=${accessType}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <header className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-red-600">YouTube Demo Simulado</h1>
-            <p className="text-sm text-gray-600 mt-1">Frontend de demostración para verificación de scopes</p>
-          </div>
-          <nav className="flex gap-3 items-center">
-            <button onClick={() => setRoute("home")} className="text-sm px-3 py-1 rounded hover:bg-gray-100">Home</button>
-            <button onClick={() => setRoute("demo")} className="text-sm px-3 py-1 rounded hover:bg-gray-100">Demo</button>
-            <button onClick={() => setRoute("privacy")} className="text-sm px-3 py-1 rounded hover:bg-gray-100">Privacy</button>
-            <button onClick={() => setRoute("terms")} className="text-sm px-3 py-1 rounded hover:bg-gray-100">Terms</button>
-            <div className="ml-4">
-              {!connected ? (
-                <button onClick={simulateConnect} className="bg-white border px-3 py-2 rounded flex items-center gap-2 shadow">
-                  <span className="text-sm">Conectar (Simulado)</span>
-                </button>
-              ) : (
-                <div className="text-sm text-green-700">Conectado (Simulado)</div>
-              )}
-            </div>
-          </nav>
-        </header>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
+      <h1 className="text-6xl font-extrabold text-center mb-6 text-white drop-shadow-[0_0_20px_rgb(255,255,255)]">
+        Búsqueda semántica básica
+      </h1>
+      <h2 className="text-5xl font-bold text-center mb-4 text-white drop-shadow-[0_0_15px_rgb(255,0,0)]">
+        YouTube SaaS
+      </h2>
+      <p className="text-center text-lg mb-8 max-w-lg text-gray-200">
+        Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
+      </p>
 
-        {/* ROUTES */}
-        {route === "home" && (
-          <main className="space-y-6">
-            <section className="bg-white p-6 rounded shadow">
-              <h2 className="text-xl font-semibold">Bienvenido</h2>
-              <p className="text-gray-600 mt-2">Usa esta demo para mostrar a Google cómo tu aplicación utilizará los permisos de YouTube. Todo está simulado y no realiza llamadas reales.</p>
-              <ul className="mt-3 list-disc ml-5 text-sm text-gray-700">
-                <li>Muestra la interfaz de conexión simulada.</li>
-                <li>Simula la lista de videos y la subida de contenido.</li>
-                <li>Incluye navegación a Privacy y Terms.</li>
-              </ul>
-            </section>
-          </main>
-        )}
+      {/* Botón de Google solo si no ha iniciado sesión */}
+      {!isLoggedIn && (
+        <a
+          href={googleAuthUrl}
+          className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 533.5 544.3">
+            <path
+              fill="#4285F4"
+              d="M533.5 278.4c0-17.3-1.5-34-4.3-50.3H272v95.3h146.9c-6.3 34-25 
+              62.9-53.1 82l85.8 66.7c50.1-46.2 78-114.1 78-193.7z"
+            />
+            <path
+              fill="#34A853"
+              d="M272 544.3c72.6 0 133.6-24.1 
+              178.1-65.4l-85.8-66.7c-23.9 16-54.3 
+              25.6-92.3 25.6-71 0-131.2-47.8-152.8-111.9L32.1 
+              386.6c44.6 88.5 134.2 151.7 239.9 157.7z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M119.2 306.5c-10.5-31.5-10.5-65.6 
+              0-97.1L32.1 142.2c-39.3 77-39.3 
+              168.1 0 245.1l87.1-80.8z"
+            />
+            <path
+              fill="#EA4335"
+              d="M272 107.7c38.3-.6 74.9 13.2 
+              102.8 38.9l77.1-77.1C405.3 24.1 
+              344.3 0 272 0 166.3 6 76.7 69.2 
+              32.1 157.7l87.1 80.8C140.8 155.5 
+              201 107.7 272 107.7z"
+            />
+          </svg>
+          Iniciar sesión con Google
+        </a>
+      )}
 
-        {route === "demo" && (
-          <main className="space-y-6">
-            <section className="bg-white p-6 rounded shadow">
-              <h2 className="text-xl font-semibold">Flujo de conexión simulado</h2>
-              <p className="text-gray-600 mt-2">Haz clic en <strong>Conectar (Simulado)</strong> para activar la demo y mostrar la funcionalidad de gestión de videos.</p>
-            </section>
+      {/* Botón Conectar con YouTube */}
+      <a
+        href={youtubeAuthUrl}
+        className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
+      >
+        <svg className="w-6 h-6" viewBox="0 0 24 24">
+          <path
+            fill="white"
+            d="M23.5 6.2s-.2-1.7-.9-2.5c-.9-1-2-1-2.5-1.1C16.6 2.2 
+            12 2.2 12 2.2h0s-4.6 0-8.1.4c-.5.1-1.6.1-2.5 
+            1.1-.7.8-.9 2.5-.9 2.5S0 8.3 0 10.5v1.9c0 2.2.2 
+            4.3.2 4.3s.2 1.7.9 2.5c.9 1 2.1 1 2.6 1.1 1.9.2 
+            7.9.4 7.9.4s4.6 0 8.1-.4c.5-.1 1.6-.1 2.5-1.1.7-.8.9-2.5.9-2.5s.2-2.2.2-4.3v-1.9c0-2.2-.2-4.3-.2-4.3z"
+          />
+          <path fill="#03245C" d="M9.8 15.3V8.7l6.4 3.3-6.4 3.3z" />
+        </svg>
+        Conectar con YouTube
+      </a>
 
-            {/* Video list (youtube.readonly) */}
-            <section className="bg-white p-6 rounded shadow">
-              <h3 className="font-semibold">📺 Lista de videos (Simulada)</h3>
-              <p className="text-sm text-gray-600 mt-2">La aplicación puede listar los videos del usuario para mostrar gestión y estadísticas básicas (simulado).</p>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sampleVideos.map((v) => (
-                  <article key={v.id} className="bg-gray-50 rounded overflow-hidden border">
-                    <img src={v.thumb} alt={v.title} className="w-full h-40 object-cover" />
-                    <div className="p-3">
-                      <h4 className="font-medium text-sm">{v.title}</h4>
-                      <p className="text-xs text-gray-500 mt-1">ID: {v.id}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+      {isYouTubeConnected && (
+        <p className="text-white text-xl mt-4">¡Conexión con YouTube completada! Puedes continuar.</p>
+      )}
 
-            {/* Upload form (youtube.upload) */}
-            <section className="bg-white p-6 rounded shadow">
-              <h3 className="font-semibold">⬆️ Formulario de subida (Simulado)</h3>
-              <p className="text-sm text-gray-600 mt-2">Simulación de subida de videos para la verificación de Google.</p>
-
-              <div className="mt-4 max-w-xl">
-                <label className="block text-sm">Título</label>
-                <input className="w-full border rounded px-3 py-2 mt-1" placeholder="Mi nuevo video" />
-
-                <label className="block text-sm mt-3">Descripción</label>
-                <textarea className="w-full border rounded px-3 py-2 mt-1" rows={4} placeholder="Descripción del video"></textarea>
-
-                <label className="block text-sm mt-3">Archivo de video</label>
-                <input type="file" className="mt-1" />
-
-                <div className="mt-4 flex items-center gap-3">
-                  <button onClick={simulateUpload} className="px-4 py-2 bg-red-600 text-white rounded" disabled={uploading}>Subir (Simulado)</button>
-                  {uploading && (
-                    <div className="flex-1">
-                      <div className="w-full bg-gray-200 rounded h-3 overflow-hidden">
-                        <div style={{ width: `${progress}%` }} className="h-3 bg-red-600 transition-all" />
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">Progreso: {progress}%</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </section>
-          </main>
-        )}
-
-        {route === "privacy" && (
-          <main className="bg-white p-6 rounded shadow">
-            <h2 className="text-xl font-semibold">Política de Privacidad (Simulada)</h2>
-            <p className="text-sm text-gray-700 mt-3">Esta política de privacidad es un ejemplo para la verificación. Adapta a tu servicio real antes de publicar en producción.</p>
-          </main>
-        )}
-
-        {route === "terms" && (
-          <main className="bg-white p-6 rounded shadow">
-            <h2 className="text-xl font-semibold">Términos de Servicio (Simulado)</h2>
-            <p className="text-sm text-gray-700 mt-3">Estos términos son un ejemplo para la verificación. Personaliza antes de publicar en producción.</p>
-          </main>
-        )}
-
-        <footer className="mt-10 text-center text-xs text-gray-500">Demo creada para verificación de OAuth • Simulación total, no realiza llamadas reales</footer>
-      </div>
+      <footer className="mt-16 text-gray-400 text-sm">
+        <a href="/terms" className="underline mx-2">
+          Términos
+        </a>
+        <a href="/privacy" className="underline mx-2">
+          Privacidad
+        </a>
+      </footer>
     </div>
   );
 }
