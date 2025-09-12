@@ -2,24 +2,20 @@ import React, { useEffect, useState } from "react";
 
 export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isYouTubeConnected, setIsYouTubeConnected] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     // Revisar si ya hay sesión guardada
-    const googleLogged = localStorage.getItem("userLoggedIn") === "true";
-    if (googleLogged) {
+    const loggedIn = localStorage.getItem("userLoggedIn") === "true";
+    if (loggedIn) {
+      const profile = JSON.parse(localStorage.getItem("userProfile"));
+      setUserProfile(profile);
       setIsLoggedIn(true);
-    }
-
-    const params = new URLSearchParams(window.location.search);
-
-    // Revisar si backend ya completó YouTube OAuth
-    if (params.get("loggedIn") === "true") {
-      setIsYouTubeConnected(true);
     }
 
     // Revisar si viene token de Google en hash o query
     let token = null;
+    const params = new URLSearchParams(window.location.search);
     const hash = window.location.hash;
 
     if (hash.includes("access_token")) {
@@ -29,27 +25,29 @@ export default function LandingPage() {
     }
 
     if (token) {
+      // Guardar sesión
       localStorage.setItem("userLoggedIn", "true");
       localStorage.setItem("google_token", token);
-      setIsLoggedIn(true); // 👈 fuerza re-render inmediato
+
+      // Obtener perfil de usuario desde la API de Google
+      fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          localStorage.setItem("userProfile", JSON.stringify(data));
+          setUserProfile(data);
+          setIsLoggedIn(true);
+        });
     }
 
-    // Limpiar la URL después de procesar
+    // Limpiar la URL
     window.history.replaceState({}, document.title, "/");
     window.location.hash = "";
   }, []);
 
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
-
-  // CLIENT IDs ACTUALIZADOS
-  const clientId = "771066809924-k1dqmre5kc27go0apu230o3o84fphfeh.apps.googleusercontent.com"; // YouTube OAuth
-  const redirectUri = "https://mi-backend12.duckdns.org/api/oauth-callback"; // <-- Actualizado
-  const scope = "https://www.googleapis.com/auth/youtube.readonly";
-  const accessType = "offline";
-  const youtubeAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-    redirectUri
-  )}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=${accessType}`;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
@@ -60,10 +58,10 @@ export default function LandingPage() {
         YouTube SaaS
       </h2>
       <p className="text-center text-lg mb-8 max-w-lg text-gray-200">
-        Transcribe, indexa y busca automáticamente en los últimos videos de tu canal de YouTube.
+        Transcribe, indexa y busca automáticamente en tus videos subidos.
       </p>
 
-      {/* Botón de Google solo si no ha iniciado sesión */}
+      {/* Si no ha iniciado sesión, mostrar botón de Google */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
@@ -101,27 +99,19 @@ export default function LandingPage() {
         </a>
       )}
 
-      {/* Botón Conectar con YouTube */}
-      <a
-        href={youtubeAuthUrl}
-        className="bg-red-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-red-700 transition drop-shadow-[0_0_10px_rgb(255,0,0)] flex items-center gap-2"
-      >
-        <svg className="w-6 h-6" viewBox="0 0 24 24">
-          <path
-            fill="white"
-            d="M23.5 6.2s-.2-1.7-.9-2.5c-.9-1-2-1-2.5-1.1C16.6 2.2 
-            12 2.2 12 2.2h0s-4.6 0-8.1.4c-.5.1-1.6.1-2.5 
-            1.1-.7.8-.9 2.5-.9 2.5S0 8.3 0 10.5v1.9c0 2.2.2 
-            4.3.2 4.3s.2 1.7.9 2.5c.9 1 2.1 1 2.6 1.1 1.9.2 
-            7.9.4 7.9.4s4.6 0 8.1-.4c.5-.1 1.6-.1 2.5-1.1.7-.8.9-2.5.9-2.5s.2-2.2.2-4.3v-1.9c0-2.2-.2-4.3-.2-4.3z"
+      {/* Si ya inició sesión, mostrar avatar y botón EMPEZAR */}
+      {isLoggedIn && userProfile && (
+        <div className="flex flex-col items-center gap-6">
+          <img
+            src={userProfile.picture}
+            alt={userProfile.name}
+            className="w-16 h-16 rounded-full shadow-md"
           />
-          <path fill="#03245C" d="M9.8 15.3V8.7l6.4 3.3-6.4 3.3z" />
-        </svg>
-        Conectar con YouTube
-      </a>
-
-      {isYouTubeConnected && (
-        <p className="text-white text-xl mt-4">¡Conexión con YouTube completada! Puedes continuar.</p>
+          <p className="text-white text-xl font-semibold">Hola, {userProfile.given_name}</p>
+          <button className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition shadow-md">
+            EMPEZAR
+          </button>
+        </div>
       )}
 
       <footer className="mt-16 text-gray-400 text-sm">
