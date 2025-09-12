@@ -50,7 +50,17 @@ export default function LandingPage() {
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
+      {/* Avatar arriba a la derecha */}
+      {isLoggedIn && userProfile && (
+        <img
+          src={userProfile.picture}
+          alt={userProfile.name}
+          className="absolute top-4 right-4 w-10 h-10 rounded-full shadow-md"
+          title={userProfile.name}
+        />
+      )}
+
       <h1 className="text-6xl font-extrabold text-center mb-6 text-white drop-shadow-[0_0_20px_rgb(255,255,255)]">
         Búsqueda semántica básica
       </h1>
@@ -61,7 +71,7 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en tus videos subidos.
       </p>
 
-      {/* Si no ha iniciado sesión, mostrar botón de Google */}
+      {/* Botón de Google si no ha iniciado sesión */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
@@ -99,15 +109,12 @@ export default function LandingPage() {
         </a>
       )}
 
-      {/* Si ya inició sesión, mostrar avatar y botón EMPEZAR */}
+      {/* Botón EMPEZAR si ya inició sesión */}
       {isLoggedIn && userProfile && (
         <div className="flex flex-col items-center gap-6">
-          <img
-            src={userProfile.picture}
-            alt={userProfile.name}
-            className="w-16 h-16 rounded-full shadow-md"
-          />
-          <p className="text-white text-xl font-semibold">Hola, {userProfile.given_name}</p>
+          <p className="text-white text-xl font-semibold">
+            Hola, {userProfile.given_name}!
+          </p>
           <button className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition shadow-md">
             EMPEZAR
           </button>
