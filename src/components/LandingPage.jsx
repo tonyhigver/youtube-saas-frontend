@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import para navegación
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
 
@@ -48,6 +50,11 @@ export default function LandingPage() {
 
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
+
+  // Función para ir a la página de disclaimers
+  const handleStart = () => {
+    navigate("/upload-disclaimer"); // <-- Página con TOS, disclaimers y checkbox
+  };
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
@@ -115,7 +122,10 @@ export default function LandingPage() {
           <p className="text-white text-xl font-semibold">
             Hola, {userProfile.given_name}!
           </p>
-          <button className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition shadow-md">
+          <button
+            onClick={handleStart} // <-- Redirige a página de disclaimers
+            className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition shadow-md"
+          >
             EMPEZAR
           </button>
         </div>
