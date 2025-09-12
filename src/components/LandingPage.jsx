@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import para navegación
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -7,7 +7,6 @@ export default function LandingPage() {
   const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
-    // Revisar si ya hay sesión guardada
     const loggedIn = localStorage.getItem("userLoggedIn") === "true";
     if (loggedIn) {
       const profile = JSON.parse(localStorage.getItem("userProfile"));
@@ -15,7 +14,6 @@ export default function LandingPage() {
       setIsLoggedIn(true);
     }
 
-    // Revisar si viene token de Google en hash o query
     let token = null;
     const params = new URLSearchParams(window.location.search);
     const hash = window.location.hash;
@@ -27,11 +25,9 @@ export default function LandingPage() {
     }
 
     if (token) {
-      // Guardar sesión
       localStorage.setItem("userLoggedIn", "true");
       localStorage.setItem("google_token", token);
 
-      // Obtener perfil de usuario desde la API de Google
       fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -43,7 +39,6 @@ export default function LandingPage() {
         });
     }
 
-    // Limpiar la URL
     window.history.replaceState({}, document.title, "/");
     window.location.hash = "";
   }, []);
@@ -51,14 +46,13 @@ export default function LandingPage() {
   const googleAuthUrl =
     "https://accounts.google.com/o/oauth2/v2/auth?client_id=771066809924-68rinikvn84dl6stdmniov39uo38emsu.apps.googleusercontent.com&redirect_uri=https://youtube-saas-frontend.vercel.app&response_type=token&scope=openid%20email%20profile";
 
-  // Función para ir a la página de disclaimers
+  // Redirige a la página principal del SaaS
   const handleStart = () => {
-    navigate("/upload-disclaimer"); // <-- Página con TOS, disclaimers y checkbox
+    navigate("/saas-main"); // <-- nueva página donde irá todo el SaaS
   };
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#03245C] p-4">
-      {/* Avatar arriba a la derecha */}
       {isLoggedIn && userProfile && (
         <img
           src={userProfile.picture}
@@ -78,52 +72,51 @@ export default function LandingPage() {
         Transcribe, indexa y busca automáticamente en tus videos subidos.
       </p>
 
-      {/* Botón de Google si no ha iniciado sesión */}
       {!isLoggedIn && (
         <a
           href={googleAuthUrl}
           className="bg-white text-gray-800 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition mb-4 flex items-center gap-2 shadow-md"
         >
+          {/* SVG de Google */}
           <svg className="w-5 h-5" viewBox="0 0 533.5 544.3">
             <path
               fill="#4285F4"
               d="M533.5 278.4c0-17.3-1.5-34-4.3-50.3H272v95.3h146.9c-6.3 34-25 
-              62.9-53.1 82l85.8 66.7c50.1-46.2 78-114.1 78-193.7z"
+                 62.9-53.1 82l85.8 66.7c50.1-46.2 78-114.1 78-193.7z"
             />
             <path
               fill="#34A853"
               d="M272 544.3c72.6 0 133.6-24.1 
-              178.1-65.4l-85.8-66.7c-23.9 16-54.3 
-              25.6-92.3 25.6-71 0-131.2-47.8-152.8-111.9L32.1 
-              386.6c44.6 88.5 134.2 151.7 239.9 157.7z"
+                 178.1-65.4l-85.8-66.7c-23.9 16-54.3 
+                 25.6-92.3 25.6-71 0-131.2-47.8-152.8-111.9L32.1 
+                 386.6c44.6 88.5 134.2 151.7 239.9 157.7z"
             />
             <path
               fill="#FBBC05"
               d="M119.2 306.5c-10.5-31.5-10.5-65.6 
-              0-97.1L32.1 142.2c-39.3 77-39.3 
-              168.1 0 245.1l87.1-80.8z"
+                 0-97.1L32.1 142.2c-39.3 77-39.3 
+                 168.1 0 245.1l87.1-80.8z"
             />
             <path
               fill="#EA4335"
               d="M272 107.7c38.3-.6 74.9 13.2 
-              102.8 38.9l77.1-77.1C405.3 24.1 
-              344.3 0 272 0 166.3 6 76.7 69.2 
-              32.1 157.7l87.1 80.8C140.8 155.5 
-              201 107.7 272 107.7z"
+                 102.8 38.9l77.1-77.1C405.3 24.1 
+                 344.3 0 272 0 166.3 6 76.7 69.2 
+                 32.1 157.7l87.1 80.8C140.8 155.5 
+                 201 107.7 272 107.7z"
             />
           </svg>
           Iniciar sesión con Google
         </a>
       )}
 
-      {/* Botón EMPEZAR si ya inició sesión */}
       {isLoggedIn && userProfile && (
         <div className="flex flex-col items-center gap-6">
           <p className="text-white text-xl font-semibold">
             Hola, {userProfile.given_name}!
           </p>
           <button
-            onClick={handleStart} // <-- Redirige a página de disclaimers
+            onClick={handleStart}
             className="bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition shadow-md"
           >
             EMPEZAR
