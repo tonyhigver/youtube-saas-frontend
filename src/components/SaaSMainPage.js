@@ -14,12 +14,28 @@ export default function SaaSMainPage() {
     setSelectedFile(e.target.files[0]);
   };
 
-  const handleUpload = () => {
-    if (!selectedFile) return alert("Por favor selecciona un archivo antes de subir.");
-    if (!agreed) return alert("Debes confirmar que eres propietario del contenido.");
-    // Aquí irá la lógica para subir y transcribir el video
-    console.log("Subiendo video:", selectedFile.name);
-    alert(`Video "${selectedFile.name}" listo para transcripción (simulación).`);
+  const handleUpload = async () => {
+    if (!selectedFile)
+      return alert("Por favor selecciona un archivo antes de subir.");
+    if (!agreed)
+      return alert("Debes confirmar que eres propietario del contenido.");
+
+    const formData = new FormData();
+    formData.append("video", selectedFile);
+
+    try {
+      // 🔹 Cambié la URL para que apunte al backend
+      const res = await fetch("http://localhost:5000/upload-video", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      alert(data.message); // "Video transcrito y embeddings generados con éxito"
+    } catch (err) {
+      console.error(err);
+      alert("Ocurrió un error durante la subida y transcripción.");
+    }
   };
 
   return (
