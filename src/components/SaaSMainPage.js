@@ -30,11 +30,16 @@ export default function SaaSMainPage() {
         body: formData,
       });
 
+      if (!res.ok) {
+        const text = await res.text(); // Captura la respuesta cruda
+        throw new Error(`HTTP ${res.status}: ${text}`);
+      }
+
       const data = await res.json();
       alert(data.message); // "Video transcrito y embeddings generados con éxito"
     } catch (err) {
-      console.error(err);
-      alert("Ocurrió un error durante la subida y transcripción.");
+      console.error("🚨 Error detallado en frontend:", err);
+      alert("Ocurrió un error durante la subida y transcripción. Revisa la consola para más detalles.");
     }
   };
 
@@ -67,7 +72,7 @@ export default function SaaSMainPage() {
           <p className="text-gray-300 mb-4 text-center">
             Selecciona un archivo de video desde tu ordenador. Luego lo procesaremos para transcripción y búsqueda semántica.
           </p>
-          
+
           <input
             type="file"
             accept="video/*"
