@@ -24,8 +24,8 @@ export default function SaaSMainPage() {
     formData.append("video", selectedFile);
 
     try {
-      // 🔹 Cambié la URL para que apunte al backend
-      const res = await fetch("http://localhost:5000/upload-video", {
+      // 🔹 URL actualizada al servidor público con puerto 5000
+      const res = await fetch("http://157.180.88.215:5000/upload-video", {
         method: "POST",
         body: formData,
       });
@@ -53,7 +53,6 @@ export default function SaaSMainPage() {
 
       {/* Contenido principal */}
       <main className="flex-1 relative p-6 flex flex-col items-center justify-center">
-        {/* Avatar usuario arriba derecha */}
         {userProfile && (
           <img
             src={userProfile.picture}
@@ -63,7 +62,6 @@ export default function SaaSMainPage() {
           />
         )}
 
-        {/* Área central para subir video */}
         <div className="bg-gray-900 p-8 rounded-lg shadow-lg flex flex-col items-center w-full max-w-md">
           <h1 className="text-2xl font-bold mb-4">Sube tu video para transcribir</h1>
           <p className="text-gray-300 mb-4 text-center">
@@ -77,7 +75,6 @@ export default function SaaSMainPage() {
             className="mb-4 text-black"
           />
 
-          {/* Checkbox obligatorio */}
           <label className="flex items-center gap-2 mt-2 text-white text-lg">
             <input
               type="checkbox"
