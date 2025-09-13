@@ -24,7 +24,7 @@ export default function SaaSMainPage() {
     formData.append("video", selectedFile);
 
     try {
-      // 🔹 URL actualizada al servidor público con puerto 5000
+      // 🔹 URL apuntando a tu servidor VPS con IP pública y puerto 5000
       const res = await fetch("http://157.180.88.215:5000/upload-video", {
         method: "POST",
         body: formData,
